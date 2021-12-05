@@ -1,9 +1,6 @@
 package com.falabella.test.products.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -22,7 +19,9 @@ public class ImageProductEntity extends CommonEntity {
     @Column(name = "IMAGE_URL", nullable = false, length = 50)
     private String urlImage;
 
-    @ManyToOne
+    @ToString.Exclude
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "product_id", referencedColumnName = "sku", foreignKey = @ForeignKey(name = "FK_IMAGE_PRODUCT_PRODUCT"))
     private ProductEntity productEntity;
 
 }
