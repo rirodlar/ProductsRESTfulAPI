@@ -7,11 +7,15 @@ import com.falabella.test.products.entity.ProductEntity;
 import com.falabella.test.products.service.ProductService;
 import com.falabella.test.products.util.EntityDtoConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
+import java.util.List;
 
+@RequestMapping("product")
 @RestController
 public class ProductController {
 
@@ -19,15 +23,17 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @Autowired
-    private EntityDtoConverter entityDtoConverter;
 
-
-    @PostMapping(value = "product/create")
+    @PostMapping(value = "")
     public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody ProductRequest payload){
-        ProductEntity productEntity = productService.createProduct(payload);
-        return new ResponseEntity<>(entityDtoConverter.convertEntityToDto(productEntity), HttpStatus.CREATED);
+        ProductResponse product = productService.createProduct(payload);
+        return new ResponseEntity<>(product, HttpStatus.CREATED);
     }
 
+    @GetMapping(value = "")
+    public ResponseEntity<List<ProductResponse>> findAll() {
+        List<ProductResponse> productResponseList = productService.findAllProducts();
+        return new ResponseEntity<>(productResponseList, HttpStatus.OK);
+    }
 
 }

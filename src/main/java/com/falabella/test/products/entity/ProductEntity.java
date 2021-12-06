@@ -1,12 +1,10 @@
 package com.falabella.test.products.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Objects;
 import java.util.Set;
 
 @Builder
@@ -37,7 +35,22 @@ public class ProductEntity extends CommonEntity {
     @Column(name = "IMAGE_URL", nullable = false)
     private String imageUrl;
 
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "productEntity")
-    private Set<ImageProductEntity> imageProductEntitySet;
+    private Set<ImageProductEntity> otherImages;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        ProductEntity that = (ProductEntity) o;
+        return sku.equals(that.sku);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), sku);
+    }
 }
