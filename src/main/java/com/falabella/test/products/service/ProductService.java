@@ -61,7 +61,6 @@ public class ProductService {
         return entityDtoConverter.convertEntityToDto(productEntity.get());
     }
 
-    @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
     public ProductResponseDto updateProductBySku(String sku, Map<String, Object> changes) throws ViolationConstrainsProductException {
 
         ProductEntity productEntity = findProductById(sku);
@@ -98,7 +97,7 @@ public class ProductService {
             throw new ViolationConstrainsProductException(violations.toString());
         }
 
-        ProductEntity productUpdate = productRepository.save(productEntity);
+        ProductEntity productUpdate = productRepository.saveAndFlush(mapProductEntityToProductRequestModel(productRequestModel));
         return entityDtoConverter.convertEntityToDto(productUpdate);
 
     }
@@ -132,10 +131,11 @@ public class ProductService {
 
 
         }
+
         return entityDtoConverter.convertEntityToDto(newProductEntity);
     }
 
-
+    @Transactional()
     public void deleteProduct(String sku) {
         ProductEntity productEntity = findProductById(sku);
         productRepository.delete(productEntity);
@@ -155,6 +155,17 @@ public class ProductService {
                 .size(productEntity.getSize())
                 .price(productEntity.getPrice())
                 .urlImage(productEntity.getImageUrl())
+                .build();
+    }
+
+    private ProductEntity mapProductEntityToProductRequestModel(ProductRequestDto productEntity) {
+        return ProductEntity.builder()
+                .sku(productEntity.getSku())
+                .brand(productEntity.getBrand())
+                .name(productEntity.getName())
+                .size(productEntity.getSize())
+                .price(productEntity.getPrice())
+                .imageUrl(productEntity.getUrlImage())
                 .build();
     }
 

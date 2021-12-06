@@ -52,14 +52,6 @@ public class ErrorMessageDto {
         log.info("Error :" + this);
     }
 
-    public ErrorMessageDto(String message, List<MessageDto> listMessage) {
-        this.message = message;
-        this.localDateTime = LocalDateTime.now();
-        this.setMessageList(listMessage);
-        this.valid = false;
-        log.info("Error :" + this);
-    }
-
 
     public ErrorMessageDto(MethodArgumentNotValidException exception, String path) {
         this.exception = exception.getClass().getSimpleName();
