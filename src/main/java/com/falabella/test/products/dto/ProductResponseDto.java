@@ -1,13 +1,14 @@
 package com.falabella.test.products.dto;
 
-import com.falabella.test.products.entity.ImageProductEntity;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Set;
 
 @Data
-public class ProductResponse {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class ProductResponseDto {
     private String sku;
     private String name;
     private String brand;
@@ -15,5 +16,5 @@ public class ProductResponse {
     private BigDecimal price;
     private String imageUrl;
 
-    private Set<ProductRequest.ImageDto> otherImages;
+    private Set<ImageDto> otherImages;
 }

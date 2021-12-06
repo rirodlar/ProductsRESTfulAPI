@@ -1,6 +1,6 @@
 package com.falabella.test.products.util;
 
-import com.falabella.test.products.dto.ProductResponse;
+import com.falabella.test.products.dto.ProductResponseDto;
 import com.falabella.test.products.entity.ProductEntity;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +15,11 @@ public class EntityDtoConverter {
     @Autowired
     private ModelMapper modelMapper;
 
-    public ProductResponse convertEntityToDto(ProductEntity product){
-        return modelMapper.map(product, ProductResponse.class);
+    public ProductResponseDto convertEntityToDto(ProductEntity product){
+        return modelMapper.map(product, ProductResponseDto.class);
     }
 
-    public List<ProductResponse> convertEntityToDto(List<ProductEntity> productList){
+    public List<ProductResponseDto> convertEntityToDto(List<ProductEntity> productList){
         return productList
                 .stream()
                 .map(product -> convertEntityToDto(product))

@@ -12,8 +12,9 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
+@Builder
 @Data
-public class ProductRequest {
+public class ProductRequestDto {
 
    @NotNull
    @NotBlank
@@ -41,16 +42,8 @@ public class ProductRequest {
    private String urlImage;
 
    @Valid
-   private Set<ImageDto> otherImageSet = new HashSet<>();
+   private Set<ImageDto> otherImages = new HashSet<>();
 
-   @Data
-   @Builder
-   @NoArgsConstructor
-   @AllArgsConstructor
-   public static class ImageDto{
-      @NotBlank
-      @Pattern(regexp = "(http://|https://)(www.)?([a-zA-Z0-9]+).[a-zA-Z0-9]*.[a-z]{3}.?([a-z]+)?")
-      private String urlImage;
-   }
+
 
 }

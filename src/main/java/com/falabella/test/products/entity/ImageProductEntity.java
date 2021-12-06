@@ -14,10 +14,9 @@ import java.util.Objects;
 @NoArgsConstructor
 public class ImageProductEntity extends CommonEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
+
+    @Id
     @Column(name = "IMAGE_URL", nullable = false, length = 50)
     private String urlImage;
 
@@ -25,17 +24,18 @@ public class ImageProductEntity extends CommonEntity {
     @JoinColumn(name = "product_id", referencedColumnName = "sku", foreignKey = @ForeignKey(name = "FK_IMAGE_PRODUCT_PRODUCT"))
     private ProductEntity productEntity;
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         ImageProductEntity that = (ImageProductEntity) o;
-        return id.equals(that.id);
+        return Objects.equals(urlImage, that.urlImage);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), id);
+        return Objects.hash(super.hashCode(), urlImage);
     }
 }

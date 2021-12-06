@@ -1,27 +1,29 @@
 package com.falabella.test.products.service;
 
 
-import com.falabella.test.products.dto.ProductRequest;
-import com.falabella.test.products.dto.ProductResponse;
+import com.falabella.test.products.dto.ProductRequestDto;
+import com.falabella.test.products.dto.ProductResponseDto;
 import com.falabella.test.products.entity.ImageProductEntity;
 import com.falabella.test.products.entity.ProductEntity;
+import com.falabella.test.products.exception.ProductNotFoundException;
+import com.falabella.test.products.exception.ViolationConstrainsProductException;
 import com.falabella.test.products.repository.ImageProductRepository;
 import com.falabella.test.products.repository.ProductRepository;
 import com.falabella.test.products.util.EntityDtoConverter;
 import com.falabella.test.products.util.Message;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+import java.math.BigDecimal;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -39,44 +41,116 @@ public class ProductService {
     private EntityDtoConverter entityDtoConverter;
 
     @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
-    public List<ProductResponse> findAllProducts() {
-        List<ProductResponse> productResponseList = new ArrayList<>();
+    public List<ProductResponseDto> findAllProducts() {
+        List<ProductResponseDto> productResponseDtoList = new ArrayList<>();
         Set<ProductEntity> productEntityList = productRepository.findProducts();
         for (ProductEntity product : productEntityList) {
-            productResponseList.add(entityDtoConverter.convertEntityToDto(product));
+            productResponseDtoList.add(entityDtoConverter.convertEntityToDto(product));
         }
-        return productResponseList;
+        return productResponseDtoList;
     }
 
 
     @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
-    public ProductResponse createProduct(ProductRequest productRequest) {
+    public ProductResponseDto findProductBySku(String sku) {
+        return entityDtoConverter.convertEntityToDto(productRepository.findProduct(sku));
+    }
 
-        Optional<ProductEntity> productEntityOptional = productRepository.findById(productRequest.getSku());
+    @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
+    public ProductResponseDto updateProductBySku(String sku, Map<String, Object> changes) throws ViolationConstrainsProductException {
+
+        ProductEntity productEntity = findProductById(sku);
+        ProductRequestDto productRequestModel = mapProductEntityToProductRequestModel(productEntity);
+
+        changes.forEach(
+                (change, value) -> {
+                    switch (change) {
+                        case "name":
+                            productRequestModel.setName((String) value);
+                            break;
+                        case "brand":
+                            productRequestModel.setBrand((String) value);
+                            break;
+                        case "size":
+                            productRequestModel.setSize((String) value);
+                            break;
+                        case "price":
+                            productRequestModel.setPrice((BigDecimal) value);
+                            break;
+                        case "imageUrl":
+                            productRequestModel.setUrlImage((String) value);
+                            break;
+                    }
+                }
+        );
+
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+        validator.validate(productRequestModel);
+        Set<ConstraintViolation<ProductRequestDto>> violations = validator.validate(productRequestModel);
+
+        if (!violations.isEmpty()) {
+            throw new ViolationConstrainsProductException(violations.toString());
+        }
+
+        ProductEntity productUpdate = productRepository.save(productEntity);
+        return entityDtoConverter.convertEntityToDto(productUpdate);
+
+    }
+
+
+    @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
+    public ProductResponseDto createProduct(ProductRequestDto productRequestDto) {
+
+        Optional<ProductEntity> productEntityOptional = productRepository.findById(productRequestDto.getSku());
         if (productEntityOptional.isPresent()) {
             throw new RuntimeException(Message.SKU_ALREADY_EXIST);
         }
 
         ProductEntity productEntity = ProductEntity.builder()
-                .sku(productRequest.getSku())
-                .name(productRequest.getName())
-                .size(productRequest.getSize())
-                .brand(productRequest.getBrand())
-                .price(productRequest.getPrice())
-                .imageUrl(productRequest.getUrlImage())
+                .sku(productRequestDto.getSku())
+                .name(productRequestDto.getName())
+                .size(productRequestDto.getSize())
+                .brand(productRequestDto.getBrand())
+                .price(productRequestDto.getPrice())
+                .imageUrl(productRequestDto.getUrlImage())
                 .build();
 
         ProductEntity newProductEntity = productRepository.save(productEntity);
-        if (!productRequest.getOtherImageSet().isEmpty()) {
-            Set<ImageProductEntity> otherImageList = productRequest.getOtherImageSet().stream()
+        if (!productRequestDto.getOtherImages().isEmpty()) {
+            Set<ImageProductEntity> otherImageList = productRequestDto.getOtherImages().stream()
                     .map(img -> ImageProductEntity.builder()
                             .productEntity(newProductEntity)
                             .urlImage(img.getUrlImage()).build())
                     .collect(Collectors.toSet());
             imageProductRepository.saveAll(otherImageList);
+
+
         }
         return entityDtoConverter.convertEntityToDto(newProductEntity);
     }
 
+
+    public void deleteProduct(String sku) {
+        ProductEntity productEntity = findProductById(sku);
+        productRepository.delete(productEntity);
+    }
+
+
+    private ProductEntity findProductById(String sku) {
+        return productRepository.findById(sku)
+                .orElseThrow(() -> new ProductNotFoundException(Message.SKU_NOT_FOUND));
+    }
+
+    private ProductRequestDto mapProductEntityToProductRequestModel(ProductEntity productEntity) {
+        return ProductRequestDto.builder()
+                .sku(productEntity.getSku())
+                .brand(productEntity.getBrand())
+                .name(productEntity.getName())
+                .size(productEntity.getSize())
+                .price(productEntity.getPrice())
+                .urlImage(productEntity.getImageUrl())
+                .build();
+    }
 
 }

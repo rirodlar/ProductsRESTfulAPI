@@ -11,4 +11,7 @@ public interface ProductRepository extends PagingAndSortingRepository<ProductEnt
 
     @Query("SELECT product from ProductEntity product INNER JOIN FETCH product.otherImages img")
     Set<ProductEntity> findProducts();
+
+    @Query("SELECT product from ProductEntity product INNER JOIN FETCH product.otherImages img where product.sku =?1")
+    ProductEntity findProduct(String sku);
 }
