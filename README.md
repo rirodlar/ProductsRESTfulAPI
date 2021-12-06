@@ -1,52 +1,97 @@
 # Products RESTful API
-Offline Coding Evaluation (Crud Productos)
+Offline Coding Evaluation (Build Restful CRUD API for a Product using Spring Boot, H2, JPA and Hibernate)
 
 ## Pre-requisites
 Make sure you have installed all the following prerequisites on your development machine:
 * Git
 * Java 11
 * Graddle
-* BD Postgres(optional), default H2
-Configure environment properties on `src/main/resources/environment.properties`
 
-api.port=7474
-api.prefix=/api/v1
+**1. Clone the application**
 
-### To execute the project
+```bash
+git clone https://gitlab.sodimac-it.com/rarodriguezl/products-restful-api.git
 ```
+
+**2. Run the app using maven**
+
+```bash
 ./gradlew bootRun
 ```
-### To execute the Test
+The app will start running at <http://localhost:7474>
+
+Configure environment properties on `src/main/resources/environment.properties`
+
+
+## Explore Rest APIs
+
+The app defines following CRUD APIs.
+
+### Product
+
+| Method | Url | Decription | Sample Valid Request Body | 
+| ------ | --- | ---------- | --------------------------- |
+| POST   | /api/v1/product/ | Create Product | [JSON](#createProduct) |
+| GET   | /api/v1/product | Get All Products  | |
+| GET   | /api/v1/product/{sku} | Get Products by sku|
+| DELETE   | /api/v1/product/{sku} | Delete Product by sku  |  |
+| PATCH   | /api/v1/product/ | Update Product by sku | [JSON](#updateProduct) |
+## Sample Valid JSON Request Bodys
+
+##### <a id="createProduct">Sign Up -> /api/v1/product</a>
+```json
+{
+  "sku": "FAL-2000068",
+  "brand": "B333",
+  "size":"Size of the product1",
+  "name": "Short description of the product",
+  "price": 12,
+  "urlImage": "http://www.image.cl",
+  "otherImages": [
+
+    {
+      "urlImage": "http://www.falalla/image.jpg"
+    }
+  ]
+}
 ```
-./gradlew test
+
+##### <a id="updateProduct">Sign Up -> /api/v1/product</a>
+```json
+{
+  "brand": "FAL-1111",
+  "name": "NAME11"
+}
 ```
 ###CURL
 
 #### Get All products
-
+```json
 curl --location --request GET 'localhost:7474/api/v1/product/'
+```
 status:  
 200: []  // Array de products  
 404: Not Found
 
-#### Get product by filter of SKU
+#### Get product by filter of SKU  
+```json
 curl --location --request GET 'localhost:7474/api/v1/product/FAL-2000049'
-
-status:
-200: [] // Array de productos  
+```
+status:  
+200: [] // Array of Products    
 404: Not Found  
 
 #### Delete a product by SKU
-
+```json
 curl --location --request DELETE 'localhost:7474/api/v1/product/FAL-2000049'
-
-status:
+```
+status:  
 204: Not Content  
 404: Not Found  
 500: Server Error  
 
 #### create Product
-
+```json
 curl --location --request POST 'localhost:7474/api/v1/product/' \  
 --header 'Content-Type: application/json' \  
 --data-raw '{  
@@ -65,19 +110,20 @@ curl --location --request POST 'localhost:7474/api/v1/product/' \
 }  
 ]  
 }'  
-
+```
 status:  
 201: Created   
 400: Bad Request   
 500: Server Error  
 
 #### Update a product
+```json
 curl --location --request PATCH 'localhost:7474/api/v1/product/FAL-2000049' \  
 --header 'Content-Type: application/json' \  
 --data-raw '{
     "brand": "x33333"  
 }'
-
+```
 status:  
 200: OK   
 400: Bad Request   
