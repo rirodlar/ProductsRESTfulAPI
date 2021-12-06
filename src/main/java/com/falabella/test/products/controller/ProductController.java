@@ -52,7 +52,7 @@ public class ProductController {
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Update an Product", notes = "This Operation Update a  Product.")
+    @ApiOperation(value = "Update an Product by Sku", notes = "This Operation Update a  Product.")
     @PatchMapping(value = "product/{sku}")
     public ResponseEntity updateProduct(@PathVariable String sku, @RequestBody Map<String, Object> changes) {
         try {
