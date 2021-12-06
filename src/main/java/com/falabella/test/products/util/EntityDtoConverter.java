@@ -19,10 +19,10 @@ public class EntityDtoConverter {
         return modelMapper.map(product, ProductResponseDto.class);
     }
 
-    public List<ProductResponseDto> convertEntityToDto(List<ProductEntity> productList) {
-        return productList
-                .stream()
-                .map(product -> convertEntityToDto(product))
-                .collect(Collectors.toList());
-    }
+//    public List<ProductResponseDto> convertEntityToDto(List<ProductEntity> productList) {
+//        return productList
+//                .stream()
+//                .map(product -> convertEntityToDto(product))
+//                .collect(Collectors.toList());
+//    }
 }

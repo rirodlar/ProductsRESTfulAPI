@@ -2,7 +2,7 @@ package com.falabella.test.products.repository;
 
 
 import com.falabella.test.products.entity.ProductEntity;
-import com.falabella.test.products.util.RepositoryDataUtils;
+import com.falabella.test.products.util.DataUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,9 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.Optional;
-import java.util.Set;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
@@ -25,16 +23,16 @@ public class ProductRepositoryTest {
 
     @BeforeEach
     public void setup() {
-        productRepository.save(RepositoryDataUtils.getMockProductEntity("FAL-2000067", "name1", "brand1", BigDecimal.ONE));
-        productRepository.save(RepositoryDataUtils.getMockProductEntity("FAL-1000001", "name1", "brand1", BigDecimal.TEN));
-        productRepository.save(RepositoryDataUtils.getMockProductEntity("FAL-1000002", "name1", "brand1", BigDecimal.TEN));
-        productRepository.save(RepositoryDataUtils.getMockProductEntity("FAL-1000003", "name1", "brand1", BigDecimal.ONE));
-        productRepository.save(RepositoryDataUtils.getMockProductEntity("FAL-1000004", "name1", "brand1", BigDecimal.ONE));
+        productRepository.save(DataUtils.getMockProductEntity("FAL-2000067", "name1", "brand1", BigDecimal.ONE));
+        productRepository.save(DataUtils.getMockProductEntity("FAL-1000001", "name1", "brand1", BigDecimal.TEN));
+        productRepository.save(DataUtils.getMockProductEntity("FAL-1000002", "name1", "brand1", BigDecimal.TEN));
+        productRepository.save(DataUtils.getMockProductEntity("FAL-1000003", "name1", "brand1", BigDecimal.ONE));
+        productRepository.save(DataUtils.getMockProductEntity("FAL-1000004", "name1", "brand1", BigDecimal.ONE));
     }
 
     @Test
     public void shouldSaveProductWhenSaveIsCalled() {
-        ProductEntity product = RepositoryDataUtils.getMockProductEntity("FAL-1000000", "name", "brand", BigDecimal.TEN);
+        ProductEntity product = DataUtils.getMockProductEntity("FAL-1000000", "name", "brand", BigDecimal.TEN);
 
         ProductEntity newProduct = productRepository.save(product);
 

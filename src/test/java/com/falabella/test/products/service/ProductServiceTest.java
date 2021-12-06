@@ -2,16 +2,27 @@ package com.falabella.test.products.service;
 
 
 import com.falabella.test.products.dto.ProductRequestDto;
+import com.falabella.test.products.dto.ProductResponseDto;
+import com.falabella.test.products.entity.ProductEntity;
 import com.falabella.test.products.exception.ProductNotFoundException;
+import com.falabella.test.products.exception.ViolationConstrainsProductException;
 import com.falabella.test.products.repository.ProductRepository;
-import com.falabella.test.products.util.ExceptionMessageEnum;
+import com.falabella.test.products.util.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+
+import java.math.BigDecimal;
+import java.util.Map;
+import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(SpringExtension.class)
 public class ProductServiceTest {
@@ -22,9 +33,14 @@ public class ProductServiceTest {
     @Mock
     private ProductRepository productRepository;
 
-    @DisplayName("Should Throw Incorrect Exception When Order Items are Null")
+    @Mock
+    private EntityDtoConverter entityDtoConverter;
+
+
+
+    @DisplayName("Should Throw Not Found Exception When Sku not exit")
     @Test
-    public void shouldThrowIncorrectExceptionWhenOrderItemsAreNull() {
+    public void shouldThrowNotFoundExceptionWhenSkuNotExit() {
         ProductRequestDto productRequest = new ProductRequestDto();
         productRequest.setSku("FAL-123456789");
 
@@ -33,4 +49,70 @@ public class ProductServiceTest {
 
         Assertions.assertEquals(ExceptionMessageEnum.PRODUCT_NOT_FOUND.getValue(), productNotFoundException.getMessage());
     }
+
+    @Test
+    @DisplayName("should Return ProductEntity When Create Product Is Called")
+    public void shouldReturnProductEntityWhenCreatePurchaseOrderIsCalled() {
+        ProductRequestDto request = DataUtils.getMockProductRequest("FAL-123456789");
+
+        Mockito.when(productRepository.save(Mockito.any(ProductEntity.class)))
+                .thenAnswer(i -> i.getArguments()[0]);
+
+        Mockito.when(entityDtoConverter.convertEntityToDto(Mockito.any(ProductEntity.class)))
+                .thenReturn(DataUtils.getMockProductResponseDto("FAL-123456789"));
+
+        ProductResponseDto productResponseDto =  productService.createProduct(request);
+        Assertions.assertNotNull(productResponseDto);
+        Assertions.assertEquals(productResponseDto.getSku(), request.getSku());
+        Mockito.verify(productRepository).save(any());
+    }
+
+    @Test
+    @DisplayName("should Return ProductEntity Update When Update Product Is Called")
+    public void shouldReturnProductEntityUpdateWhenUpdateProductIsCalled() throws ViolationConstrainsProductException {
+        String sku = "FAL-2000068";
+        String newBrand ="NewBrand";
+        ProductEntity productEntity = DataUtils.getMockProductEntity(sku, "Name", "Brand", BigDecimal.ONE);
+
+        Mockito.when(productRepository.findById(Mockito.anyString()))
+                .thenReturn(Optional.of(productEntity));
+
+
+        Mockito.when(productRepository.save(Mockito.any(ProductEntity.class)))
+                .thenAnswer(i -> i.getArguments()[0]);
+
+
+        Mockito.when(entityDtoConverter.convertEntityToDto(Mockito.any(ProductEntity.class)))
+                .thenReturn(DataUtils.getMockProductResponseDto(sku));
+
+        ProductResponseDto productResponseDto = productService.updateProductBySku(sku, Map.of("brand", newBrand));
+        Assertions.assertNotNull(productResponseDto);
+        Mockito.verify(productRepository).save(any());
+    }
+
+    @Test
+    @DisplayName("should Throw Violation Constraint Exception When Update Product Is Called")
+    public void shouldThrowViolationConstraintExceptionWhenUpdateProductIsCalled() throws ViolationConstrainsProductException {
+        String sku = "FAL-2000068";
+        String brandWithError ="B";
+        ProductEntity productEntity = DataUtils.getMockProductEntity(sku, "Name", "Brand", BigDecimal.ONE);
+
+        Mockito.when(productRepository.findById(Mockito.anyString()))
+                .thenReturn(Optional.of(productEntity));
+
+
+        Mockito.when(productRepository.save(Mockito.any(ProductEntity.class)))
+                .thenAnswer(i -> i.getArguments()[0]);
+
+
+        Mockito.when(entityDtoConverter.convertEntityToDto(Mockito.any(ProductEntity.class)))
+                .thenReturn(DataUtils.getMockProductResponseDto(sku));
+
+
+        ViolationConstrainsProductException violationConstrainsProductException = Assertions.assertThrows(ViolationConstrainsProductException.class,
+                () -> productService.updateProductBySku(sku, Map.of("brand", brandWithError)));
+
+        Assertions.assertNotNull(violationConstrainsProductException);
+    }
+
 }
