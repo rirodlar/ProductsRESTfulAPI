@@ -5,11 +5,13 @@ import com.falabella.test.products.dto.ProductRequestDto;
 import com.falabella.test.products.dto.ProductResponseDto;
 import com.falabella.test.products.entity.ImageProductEntity;
 import com.falabella.test.products.entity.ProductEntity;
+import com.falabella.test.products.exception.NotFoundException;
 import com.falabella.test.products.exception.ProductNotFoundException;
 import com.falabella.test.products.exception.ViolationConstrainsProductException;
 import com.falabella.test.products.repository.ImageProductRepository;
 import com.falabella.test.products.repository.ProductRepository;
 import com.falabella.test.products.util.EntityDtoConverter;
+import com.falabella.test.products.util.ExceptionMessageEnum;
 import com.falabella.test.products.util.Message;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +45,7 @@ public class ProductService {
     @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
     public List<ProductResponseDto> findAllProducts() {
         List<ProductResponseDto> productResponseDtoList = new ArrayList<>();
-        Set<ProductEntity> productEntityList = productRepository.findProducts();
+        Set<ProductEntity> productEntityList = productRepository.findAllProductWithImage();
         for (ProductEntity product : productEntityList) {
             productResponseDtoList.add(entityDtoConverter.convertEntityToDto(product));
         }
@@ -53,7 +55,11 @@ public class ProductService {
 
     @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
     public ProductResponseDto findProductBySku(String sku) {
-        return entityDtoConverter.convertEntityToDto(productRepository.findProduct(sku));
+        Optional<ProductEntity> productEntity = Optional.ofNullable(productRepository.findProductBySku(sku));
+        if(!productEntity.isPresent()){
+            throw new ProductNotFoundException(ExceptionMessageEnum.PRODUCT_NOT_FOUND.getValue());
+        }
+        return entityDtoConverter.convertEntityToDto(productEntity.get());
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
@@ -117,7 +123,7 @@ public class ProductService {
                 .build();
 
         ProductEntity newProductEntity = productRepository.save(productEntity);
-        if (!productRequestDto.getOtherImages().isEmpty()) {
+        if (productRequestDto.getOtherImages() != null && !productRequestDto.getOtherImages().isEmpty()) {
             Set<ImageProductEntity> otherImageList = productRequestDto.getOtherImages().stream()
                     .map(img -> ImageProductEntity.builder()
                             .productEntity(newProductEntity)
@@ -139,7 +145,7 @@ public class ProductService {
 
     private ProductEntity findProductById(String sku) {
         return productRepository.findById(sku)
-                .orElseThrow(() -> new ProductNotFoundException(Message.SKU_NOT_FOUND));
+                .orElseThrow(() -> new ProductNotFoundException(ExceptionMessageEnum.SKU_NOT_FOUND.getValue()));
     }
 
     private ProductRequestDto mapProductEntityToProductRequestModel(ProductEntity productEntity) {

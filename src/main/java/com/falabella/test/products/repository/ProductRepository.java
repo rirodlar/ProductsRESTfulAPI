@@ -10,8 +10,8 @@ import java.util.Set;
 public interface ProductRepository extends PagingAndSortingRepository<ProductEntity, String> {
 
     @Query("SELECT product from ProductEntity product INNER JOIN FETCH product.otherImages img")
-    Set<ProductEntity> findProducts();
+    Set<ProductEntity> findAllProductWithImage();
 
     @Query("SELECT product from ProductEntity product INNER JOIN FETCH product.otherImages img where product.sku =?1")
-    ProductEntity findProduct(String sku);
+    ProductEntity findProductBySku(String sku);
 }

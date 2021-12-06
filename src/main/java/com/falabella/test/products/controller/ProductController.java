@@ -16,13 +16,11 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.net.URI;
+
 import java.util.List;
 import java.util.Map;
 
-import static org.springframework.http.HttpStatus.CREATED;
 
-@RequestMapping("product")
 @RestController
 public class ProductController {
 
@@ -31,23 +29,20 @@ public class ProductController {
     private ProductService productService;
 
 
-    @PostMapping(value = "")
-    public ResponseEntity<ProductResponseDto> createProduct(@Valid @RequestBody ProductRequestDto payload,  UriComponentsBuilder uriComponentsBuilder){
+    @PostMapping(value = "product")
+    public ResponseEntity<ProductResponseDto> createProduct(@Valid @RequestBody ProductRequestDto payload){
         ProductResponseDto product = productService.createProduct(payload);
-        UriComponents uriComponents = uriComponentsBuilder.path("/product/{sku}").buildAndExpand(product.getSku());
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.LOCATION, uriComponents.toUriString());
-        return new ResponseEntity<>(product, headers, HttpStatus.CREATED);
+            return new ResponseEntity<>(product, HttpStatus.CREATED);
 
     }
 
-    @GetMapping(value = "")
+    @GetMapping(value = "product")
     public ResponseEntity<List<ProductResponseDto>> findAll() {
         List<ProductResponseDto> productResponseDtoList = productService.findAllProducts();
         return new ResponseEntity<>(productResponseDtoList, HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/{sku}")
+    @DeleteMapping(value = "product/{sku}")
     public ResponseEntity<Void> deleteProduct(@PathVariable String sku) {
         productService.deleteProduct(sku);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -59,7 +54,7 @@ public class ProductController {
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
-    @PatchMapping(value = "/{sku}")
+    @PatchMapping(value = "product/{sku}")
     public ResponseEntity updateProduct(@PathVariable String sku, @RequestBody Map<String, Object> changes) {
         try{
             ProductResponseDto productResponseDto =  productService.updateProductBySku(sku, changes);

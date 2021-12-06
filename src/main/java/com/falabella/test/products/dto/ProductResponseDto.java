@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -16,5 +17,5 @@ public class ProductResponseDto {
     private BigDecimal price;
     private String imageUrl;
 
-    private Set<ImageDto> otherImages;
+    private Set<ImageDto> otherImages = new HashSet<>();
 }
