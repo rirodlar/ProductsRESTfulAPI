@@ -8,20 +8,20 @@ import java.io.Serializable;
 public class MessageDto implements Serializable {
 
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  private String field;
-  private String text;
-  private int type;
+    private String field;
+    private String text;
+    private int type;
 
-  public MessageDto() {
+    public MessageDto() {
 
-  }
+    }
 
-  public MessageDto(String field, String text, int type) {
-    super();
-    this.field = field;
-    this.text = text;
-    this.type = type;
-  }
+    public MessageDto(String field, String text, int type) {
+        super();
+        this.field = field;
+        this.text = text;
+        this.type = type;
+    }
 }

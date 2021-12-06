@@ -9,11 +9,10 @@ import java.util.Objects;
 @Entity
 @Table(name = "IMAGE")
 @Data
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
 public class ImageProductEntity extends CommonEntity {
-
 
 
     @Id

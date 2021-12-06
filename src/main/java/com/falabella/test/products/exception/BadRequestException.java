@@ -8,16 +8,16 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class BadRequestException extends RuntimeException {
 
-  private static final long serialVersionUID = -602494716859410290L;
-  private static final String DEFAULT_MESSAGE = "Bad Request Exception (400)";
-  private ErrorMessageDto errorMessageDto;
+    private static final long serialVersionUID = -602494716859410290L;
+    private static final String DEFAULT_MESSAGE = "Bad Request Exception (400)";
+    private ErrorMessageDto errorMessageDto;
 
-  public BadRequestException(String message) {
-    super(String.join(". ", message));
-  }
+    public BadRequestException(String message) {
+        super(String.join(". ", message));
+    }
 
-  public BadRequestException(ErrorMessageDto errorMessage) {
-    super(errorMessage.getMessage() != null ? errorMessage.getMessage() : DEFAULT_MESSAGE);
-    this.errorMessageDto = errorMessage;
-  }
+    public BadRequestException(ErrorMessageDto errorMessage) {
+        super(errorMessage.getMessage() != null ? errorMessage.getMessage() : DEFAULT_MESSAGE);
+        this.errorMessageDto = errorMessage;
+    }
 }

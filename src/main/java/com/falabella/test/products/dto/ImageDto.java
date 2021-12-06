@@ -12,7 +12,7 @@ import javax.validation.constraints.Pattern;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ImageDto{
+public class ImageDto {
     @NotBlank
     @Pattern(regexp = "(http://|https://)(www.)?([a-zA-Z0-9]+).[a-zA-Z0-9]*.[a-z]{3}.?([a-z]+)?")
     private String urlImage;

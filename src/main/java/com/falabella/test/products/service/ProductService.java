@@ -55,7 +55,7 @@ public class ProductService {
     @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
     public ProductResponseDto findProductBySku(String sku) {
         Optional<ProductEntity> productEntity = Optional.ofNullable(productRepository.findProductBySku(sku));
-        if(!productEntity.isPresent()){
+        if (!productEntity.isPresent()) {
             throw new ProductNotFoundException(ExceptionMessageEnum.PRODUCT_NOT_FOUND.getValue());
         }
         return entityDtoConverter.convertEntityToDto(productEntity.get());

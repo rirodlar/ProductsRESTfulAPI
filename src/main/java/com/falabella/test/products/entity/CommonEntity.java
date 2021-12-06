@@ -15,6 +15,7 @@ import java.util.Date;
 @EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
 public class CommonEntity implements Serializable {
+
     @Column(name = "CREATED_DATE")
     @CreatedDate
     private Date createdDate;
