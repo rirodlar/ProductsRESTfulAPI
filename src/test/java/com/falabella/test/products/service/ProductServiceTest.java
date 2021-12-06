@@ -21,6 +21,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
 
@@ -37,6 +38,21 @@ public class ProductServiceTest {
     private EntityDtoConverter entityDtoConverter;
 
 
+
+    @DisplayName("Should Return List ProductEntity When FindAllProduct Is Called")
+    @Test
+    public void shouldReturnListProductEntityWhenFindAllProductIsCalled() {
+        Mockito.when(productRepository.findAllProductWithImage())
+                .thenReturn(Set.of(DataUtils.getMockProductEntity("FAL-123456789")));
+
+        Mockito.when(entityDtoConverter.convertEntityToDto(Mockito.any(ProductEntity.class)))
+                .thenReturn(DataUtils.getMockProductResponseDto("FAL-123456789"));
+
+        Set<ProductEntity> productEntityList = productRepository.findAllProductWithImage();
+
+        Assertions.assertNotNull(productEntityList);
+        Assertions.assertEquals(productEntityList.size(),1);
+    }
 
     @DisplayName("Should Throw Not Found Exception When Sku not exit")
     @Test
@@ -72,6 +88,10 @@ public class ProductServiceTest {
     public void shouldReturnProductEntityUpdateWhenUpdateProductIsCalled() throws ViolationConstrainsProductException {
         String sku = "FAL-2000068";
         String newBrand ="NewBrand";
+        String newName ="NewName";
+        String newSize ="NewSize";
+        BigDecimal newPrice = BigDecimal.TEN;
+        String newImageUrl ="http://www.falalla/image.jp";
         ProductEntity productEntity = DataUtils.getMockProductEntity(sku, "Name", "Brand", BigDecimal.ONE);
 
         Mockito.when(productRepository.findById(Mockito.anyString()))
@@ -85,7 +105,8 @@ public class ProductServiceTest {
         Mockito.when(entityDtoConverter.convertEntityToDto(Mockito.any(ProductEntity.class)))
                 .thenReturn(DataUtils.getMockProductResponseDto(sku));
 
-        ProductResponseDto productResponseDto = productService.updateProductBySku(sku, Map.of("brand", newBrand));
+        ProductResponseDto productResponseDto = productService
+                .updateProductBySku(sku, Map.of("brand", newBrand, "name", newName, "price", newPrice, "imageUrl",newImageUrl, "size", newSize));
         Assertions.assertNotNull(productResponseDto);
         Mockito.verify(productRepository).save(any());
     }
