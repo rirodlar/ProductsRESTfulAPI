@@ -40,7 +40,7 @@ public class ProductRequestDto {
    private BigDecimal price;
 
    @NotBlank
-   @Pattern(regexp = "(http://|https://)(www.)?([a-zA-Z0-9]+).[a-zA-Z0-9]*.[a-z]{3}.?([a-z]+)?")
+   @Pattern(regexp = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]")
    private String urlImage;
 
    @Valid
