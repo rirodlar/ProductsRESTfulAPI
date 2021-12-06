@@ -16,7 +16,10 @@ api.prefix=/api/v1
 ```
 ./gradlew bootRun
 ```
-
+### To execute the Test
+```
+./gradlew test
+```
 ###CURL
 
 #### Get All products
@@ -74,3 +77,9 @@ curl --location --request PATCH 'localhost:7474/api/v1/product/FAL-2000049' \
 --data-raw '{
     "brand": "x33333"  
 }'
+
+status:  
+200: OK   
+400: Bad Request   
+404: Not Content   
+500: Server Error 
