@@ -3,20 +3,14 @@ package com.falabella.test.products.controller;
 
 import com.falabella.test.products.dto.ProductRequestDto;
 import com.falabella.test.products.dto.ProductResponseDto;
-import com.falabella.test.products.entity.ProductEntity;
 import com.falabella.test.products.exception.ViolationConstrainsProductException;
 import com.falabella.test.products.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
-
 import java.util.List;
 import java.util.Map;
 

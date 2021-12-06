@@ -5,7 +5,6 @@ import com.falabella.test.products.dto.ProductRequestDto;
 import com.falabella.test.products.dto.ProductResponseDto;
 import com.falabella.test.products.entity.ImageProductEntity;
 import com.falabella.test.products.entity.ProductEntity;
-import com.falabella.test.products.exception.NotFoundException;
 import com.falabella.test.products.exception.ProductNotFoundException;
 import com.falabella.test.products.exception.ViolationConstrainsProductException;
 import com.falabella.test.products.repository.ImageProductRepository;
