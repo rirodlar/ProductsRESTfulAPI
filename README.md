@@ -38,7 +38,7 @@ The app defines following CRUD APIs.
 | PATCH   | /api/v1/product/ | Update Product by sku | [JSON](#updateProduct) |
 ## Sample Valid JSON Request Bodys
 
-##### <a id="createProduct">Sign Up -> /api/v1/product</a>
+##### <a id="createProduct">Add Product -> /api/v1/product</a>
 ```json
 {
   "sku": "FAL-2000068",
@@ -56,7 +56,7 @@ The app defines following CRUD APIs.
 }
 ```
 
-##### <a id="updateProduct">Sign Up -> /api/v1/product</a>
+##### <a id="updateProduct">Update Product -> /api/v1/product</a>
 ```json
 {
   "brand": "FAL-1111",
