@@ -54,7 +54,7 @@ public class ProductRequestDto {
     private String urlImage;
 
     @Valid
-    private Set<ImageDto> otherImages = new HashSet<>();
+    private Set<ImageDto> otherImages;
 
 
 }

@@ -46,7 +46,7 @@ public class ProductController {
     }
 
     @ApiOperation(value = "Find an Product By Sku", notes = "This Operation Find a  Product.")
-    @GetMapping(value = "/{sku}")
+    @GetMapping(value = "product/{sku}")
     public ResponseEntity<ProductResponseDto> findProduct(@PathVariable String sku) {
         ProductResponseDto product = productService.findProductBySku(sku);
         return new ResponseEntity<>(product, HttpStatus.OK);

@@ -3,6 +3,7 @@ package com.falabella.test.products.handler;
 import com.falabella.test.products.dto.ErrorMessageDto;
 import com.falabella.test.products.exception.BadRequestException;
 import com.falabella.test.products.exception.NotFoundException;
+import com.falabella.test.products.exception.ProductNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -16,15 +17,9 @@ import javax.servlet.http.HttpServletRequest;
 public class ResponseExceptionHandler {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler({NotFoundException.class})
+    @ExceptionHandler({NotFoundException.class, ProductNotFoundException.class})
     @ResponseBody
     public ErrorMessageDto notFoundRequest(HttpServletRequest request, Exception exception) {
-        exception.printStackTrace();
-        if (exception instanceof NotFoundException) {
-            NotFoundException notFoundException = (NotFoundException) exception;
-            ErrorMessageDto errorMessageDto = notFoundException.getErrorMessageDto();
-            return new ErrorMessageDto(exception, request.getRequestURI(), errorMessageDto);
-        }
         return new ErrorMessageDto(exception, request);
     }
 
