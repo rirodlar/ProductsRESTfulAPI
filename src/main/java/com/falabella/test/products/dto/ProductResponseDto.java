@@ -1,12 +1,14 @@
 package com.falabella.test.products.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
+@Builder
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductResponseDto {
