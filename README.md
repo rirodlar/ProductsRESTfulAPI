@@ -3,9 +3,9 @@ Offline Coding Evaluation (Build Restful CRUD API for a Product using Spring Boo
 
 ## Pre-requisites
 Make sure you have installed all the following prerequisites on your development machine:
-* Git
-* Java 11
-* Graddle
+* **GIT**
+* **Java 11**
+* **Graddle**
 
 **1. Clone the application**
 
@@ -66,15 +66,15 @@ The app defines following CRUD APIs.
 ###CURL
 
 #### Get All products
-```json
+```sh
 curl --location --request GET 'localhost:7474/api/v1/product/'
 ```
 status:  
-200: []  // Array de products  
+200: []  // Array of products  
 404: Not Found
 
 #### Get product by filter of SKU  
-```json
+```sh
 curl --location --request GET 'localhost:7474/api/v1/product/FAL-2000049'
 ```
 status:  
@@ -82,7 +82,7 @@ status:
 404: Not Found  
 
 #### Delete a product by SKU
-```json
+```sh
 curl --location --request DELETE 'localhost:7474/api/v1/product/FAL-2000049'
 ```
 status:  
@@ -91,7 +91,7 @@ status:
 500: Server Error  
 
 #### create Product
-```json
+```sh
 curl --location --request POST 'localhost:7474/api/v1/product/' \  
 --header 'Content-Type: application/json' \  
 --data-raw '{  
@@ -117,7 +117,7 @@ status:
 500: Server Error  
 
 #### Update a product
-```json
+```sh
 curl --location --request PATCH 'localhost:7474/api/v1/product/FAL-2000049' \  
 --header 'Content-Type: application/json' \  
 --data-raw '{
