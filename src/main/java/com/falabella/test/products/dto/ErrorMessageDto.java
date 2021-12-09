@@ -31,15 +31,6 @@ public class ErrorMessageDto {
     private LocalDateTime localDateTime;
     private List<MessageDto> messageList = new ArrayList<>();
 
-
-    public ErrorMessageDto(String message) {
-        this.message = message;
-        this.localDateTime = LocalDateTime.now();
-        this.setMessageList(messageList);
-        this.valid = false;
-        log.info("Error :" + this);
-    }
-
     public ErrorMessageDto(Exception exception, String path, ErrorMessageDto errorMessageDto) {
         this.exception = exception.getClass().getSimpleName();
         this.message = exception.getMessage();

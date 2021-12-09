@@ -17,7 +17,7 @@ public class ProductEntity extends CommonEntity {
 
 
     @Id
-    @Column(name = "SKU", unique = true,  nullable = false, length = 50)
+    @Column(name = "SKU", unique = true, nullable = false, length = 50)
     private String sku;
 
     @Column(name = "NAME", nullable = false, length = 50)

@@ -68,7 +68,7 @@ public class ProductServiceTest {
 
     @Test
     @DisplayName("should Return ProductEntity When Create Product Is Called")
-    public void shouldReturnProductEntityWhenCreatePurchaseOrderIsCalled() {
+    public void shouldReturnProductEntityWhenCreateProductIsCalled() {
         ProductRequestDto request = DataUtils.getMockProductRequest("FAL-123456789");
 
         Mockito.when(productRepository.save(Mockito.any(ProductEntity.class)))

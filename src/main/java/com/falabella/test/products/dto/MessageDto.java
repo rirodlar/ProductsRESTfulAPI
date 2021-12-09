@@ -14,10 +14,6 @@ public class MessageDto implements Serializable {
     private String text;
     private int type;
 
-    public MessageDto() {
-
-    }
-
     public MessageDto(String field, String text, int type) {
         super();
         this.field = field;

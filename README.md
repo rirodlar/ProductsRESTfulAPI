@@ -27,9 +27,21 @@ Configure environment properties on `src/main/resources/environment.properties`
 
 The app defines following CRUD APIs.
 
+## Explore Rest APIs
+
+The app defines following CRUD APIs.
+
+## Admin H2
+
+http://localhost:7474/api/v1/h2-console/
+
+## Swagger
+
+http://localhost:7474/api/v1/swagger-ui/index.html
+
 ### Product
 
-| Method | Url | Decription | Sample Valid Request Body | 
+| Method | Url | Description | Sample Valid Request Body | 
 | ------ | --- | ---------- | --------------------------- |
 | POST   | /api/v1/product/ | Create Product | [JSON](#createProduct) |
 | GET   | /api/v1/product | Get All Products  | |
