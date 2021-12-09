@@ -98,7 +98,7 @@ public class ProductServiceTest {
                 .thenReturn(Optional.of(productEntity));
 
 
-        Mockito.when(productRepository.save(Mockito.any(ProductEntity.class)))
+        Mockito.when(productRepository.saveAndFlush(Mockito.any(ProductEntity.class)))
                 .thenAnswer(i -> i.getArguments()[0]);
 
 
@@ -108,7 +108,7 @@ public class ProductServiceTest {
         ProductResponseDto productResponseDto = productService
                 .updateProductBySku(sku, Map.of("brand", newBrand, "name", newName, "price", newPrice, "imageUrl",newImageUrl, "size", newSize));
         Assertions.assertNotNull(productResponseDto);
-        Mockito.verify(productRepository).save(any());
+        Mockito.verify(productRepository).saveAndFlush(any());
     }
 
     @Test
