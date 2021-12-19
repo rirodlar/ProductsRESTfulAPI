@@ -85,6 +85,14 @@ status:
 200: []  // Array of products  
 404: Not Found
 
+#### Get All products Page
+```sh
+curl --location --request GET 'localhost:7474/api/v1/product/page/1/5'
+```
+status:  
+200: []  // Array of products  
+404: Not Found
+
 #### Get product by filter of SKU  
 ```sh
 curl --location --request GET 'localhost:7474/api/v1/product/FAL-2000049'
