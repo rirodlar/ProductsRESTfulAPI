@@ -10,9 +10,9 @@ import java.util.Set;
 @Repository
 public interface ProductRepository extends JpaRepository<ProductEntity, String> {
 
-    @Query("SELECT product from ProductEntity product INNER JOIN FETCH product.otherImages img")
+    @Query("SELECT product from ProductEntity product LEFT JOIN FETCH product.otherImages img")
     Set<ProductEntity> findAllProductWithImage();
 
-    @Query("SELECT product from ProductEntity product INNER JOIN FETCH product.otherImages img where product.sku =?1")
+    @Query("SELECT product from ProductEntity product LEFT JOIN FETCH product.otherImages img where product.sku =?1")
     ProductEntity findProductBySku(String sku);
 }

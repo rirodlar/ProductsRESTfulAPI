@@ -5,9 +5,12 @@ import com.falabella.test.products.dto.ProductRequestDto;
 import com.falabella.test.products.dto.ProductResponseDto;
 import com.falabella.test.products.exception.ViolationConstrainsProductException;
 import com.falabella.test.products.service.ProductService;
+import com.falabella.test.products.util.Constant;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +24,8 @@ import java.util.Map;
 public class ProductController {
 
 
+
+
     @Autowired
     private ProductService productService;
 
@@ -29,6 +34,13 @@ public class ProductController {
     public ResponseEntity<ProductResponseDto> createProduct(@Valid @RequestBody ProductRequestDto payload) {
         ProductResponseDto product = productService.createProduct(payload);
         return new ResponseEntity<>(product, HttpStatus.CREATED);
+    }
+
+    @ApiOperation(value = "Retrieve all existed products", notes = "This Operation returns all stored products.")
+    @GetMapping(value = "product/page/{page}/{size}")
+    public ResponseEntity<Page<ProductResponseDto>> findByPage(@PathVariable Integer page, @PathVariable Integer size) {
+        Page<ProductResponseDto> productResponseDtoList = productService.findAllProducts(PageRequest.of(page, size));
+        return new ResponseEntity<>(productResponseDtoList, HttpStatus.OK);
     }
 
     @ApiOperation(value = "Retrieve all existed products", notes = "This Operation returns all stored products.")

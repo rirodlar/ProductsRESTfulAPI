@@ -14,6 +14,8 @@ import com.falabella.test.products.util.ExceptionMessageEnum;
 import com.falabella.test.products.util.Message;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -41,7 +43,7 @@ public class ProductService {
     @Autowired
     private EntityDtoConverter entityDtoConverter;
 
-    @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
+    @Transactional(readOnly = true)
     public List<ProductResponseDto> findAllProducts() {
         List<ProductResponseDto> productResponseDtoList = new ArrayList<>();
         Set<ProductEntity> productEntityList = productRepository.findAllProductWithImage();
@@ -51,8 +53,20 @@ public class ProductService {
         return productResponseDtoList;
     }
 
+    @Transactional(readOnly = true)
+    public Page<ProductResponseDto> findAllProducts(Pageable pageable) {
+        Page<ProductEntity> productEntityList = productRepository.findAll(pageable);
 
-    @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
+        Page<ProductResponseDto> productResponsePageDto = productEntityList.map(entity -> {
+            ProductResponseDto dto = entityDtoConverter.convertEntityToDto(entity);
+            return dto;
+        });
+
+        return productResponsePageDto;
+    }
+
+
+    @Transactional(readOnly = true)
     public ProductResponseDto findProductBySku(String sku) {
         Optional<ProductEntity> productEntity = Optional.ofNullable(productRepository.findProductBySku(sku));
         if (!productEntity.isPresent()) {
