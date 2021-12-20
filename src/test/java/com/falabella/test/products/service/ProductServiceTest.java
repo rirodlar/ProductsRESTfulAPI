@@ -7,7 +7,9 @@ import com.falabella.test.products.entity.ProductEntity;
 import com.falabella.test.products.exception.ProductNotFoundException;
 import com.falabella.test.products.repository.ImageProductRepository;
 import com.falabella.test.products.repository.ProductRepository;
-import com.falabella.test.products.util.*;
+import com.falabella.test.products.util.DataUtils;
+import com.falabella.test.products.util.EntityDtoConverter;
+import com.falabella.test.products.util.ExceptionMessageEnum;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,9 +20,7 @@ import org.mockito.Mockito;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -49,13 +49,13 @@ public class ProductServiceTest {
     @DisplayName("Should Return List ProductEntity When FindAllProductImage Is Called")
     @Test
     public void shouldReturnListProductEntityWhenFindAllProductImageIsCalled() {
-        Mockito.when(productRepository.findAllProductWithImage())
+        Mockito.when(productRepository.findAllProductImage())
                 .thenReturn(Set.of(DataUtils.getMockProductEntity("FAL-123456789")));
 
         Mockito.when(entityDtoConverter.convertEntityToDto(Mockito.any(ProductEntity.class)))
                 .thenReturn(DataUtils.getMockProductResponseDto("FAL-123456789"));
 
-        Set<ProductEntity> productEntityList = productRepository.findAllProductWithImage();
+        Set<ProductEntity> productEntityList = productRepository.findAllProductImage();
 
         Assertions.assertNotNull(productEntityList);
         Assertions.assertEquals(productEntityList.size(), 1);
@@ -64,7 +64,7 @@ public class ProductServiceTest {
     @DisplayName("Should Return List ProductEntity When FindAllProduct Is Called")
     @Test
     public void shouldReturnListProductEntityWhenFindAllProductIsCalled() {
-        Mockito.when(productRepository.findAllProductWithImage())
+        Mockito.when(productRepository.findAllProductImage())
                 .thenReturn(Set.of(DataUtils.getMockProductEntity("FAL-123456789")));
 
         Mockito.when(entityDtoConverter.convertEntityToDto(Mockito.any(ProductEntity.class)))
@@ -81,7 +81,7 @@ public class ProductServiceTest {
     public void shouldReturnPageListProductEntityWhenPageFindAllProductIsCalled() {
 
         Page<ProductEntity> productEntityPageList = new PageImpl<>(List.of(DataUtils.getMockProductEntity("FAL-123456789")));
-                Mockito.when(productRepository.findAll(PageRequest.of(1,5)))
+        Mockito.when(productRepository.findAll(PageRequest.of(1, 5)))
                 .thenReturn(productEntityPageList);
 
         Mockito.when(entityDtoConverter.convertEntityToDto(Mockito.any(ProductEntity.class)))
@@ -126,7 +126,7 @@ public class ProductServiceTest {
 
     @Test
     @DisplayName("should Return ProductUpdate When UpdateProductBySku Is Called")
-    public void shouldReturnProductUpdateWhenUpdateProductBySkuIsCalled(){
+    public void shouldReturnProductUpdateWhenUpdateProductBySkuIsCalled() {
         String sku = "FAL-123456789";
         ProductEntity productEntity = DataUtils.getMockProductEntity("FAL-123456789", "Name", "Brand", BigDecimal.ONE);
 
@@ -149,7 +149,7 @@ public class ProductServiceTest {
 
     @Test
     @DisplayName("should Return ProductEntity Update When Update Product Is Called")
-    public void shouldReturnProductEntityUpdateWhenUpdateProductIsCalled()  {
+    public void shouldReturnProductEntityUpdateWhenUpdateProductIsCalled() {
         String sku = "FAL-2000068";
         String newBrand = "NewBrand";
         String newName = "NewName";

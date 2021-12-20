@@ -46,7 +46,7 @@ public class ProductService {
     @Transactional(readOnly = true)
     public List<ProductResponseDto> findAllProducts() {
         List<ProductResponseDto> productResponseDtoList = new ArrayList<>();
-        Set<ProductEntity> productEntityList = productRepository.findAllProductWithImage();
+        Set<ProductEntity> productEntityList = productRepository.findAllProductImage();
         for (ProductEntity product : productEntityList) {
             productResponseDtoList.add(entityDtoConverter.convertEntityToDto(product));
         }
@@ -56,7 +56,7 @@ public class ProductService {
     @Transactional(readOnly = true)
     public Page<ProductResponseDto> findAllProducts(Pageable pageable) {
         Page<ProductEntity> productEntityList = productRepository.findAll(pageable);
-        if(productEntityList != null) {
+        if (productEntityList != null) {
             Page<ProductResponseDto> productResponsePageDto = productEntityList.map(entity -> {
                 ProductResponseDto dto = entityDtoConverter.convertEntityToDto(entity);
                 return dto;

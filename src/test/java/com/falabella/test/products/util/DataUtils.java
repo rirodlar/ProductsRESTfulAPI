@@ -5,6 +5,7 @@ import com.falabella.test.products.dto.ProductRequestDto;
 import com.falabella.test.products.dto.ProductResponseDto;
 import com.falabella.test.products.entity.ImageProductEntity;
 import com.falabella.test.products.entity.ProductEntity;
+
 import java.math.BigDecimal;
 import java.util.Set;
 
@@ -55,7 +56,7 @@ public class DataUtils {
                 .name("Short description of the product")
                 .urlImage("https://dssdd.png")
                 .otherImages(Set.of(ImageDto.builder()
-                                .urlImage("https://dssdd.png")
+                        .urlImage("https://dssdd.png")
                         .build()))
                 .build();
 

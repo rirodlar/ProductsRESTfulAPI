@@ -17,7 +17,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.*;
@@ -40,11 +39,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ProductControllerIntegration {
 
     @Autowired
-    private TestRestTemplate testRestTemplate;
-
-    @Autowired
     protected MockMvc mvc;
 
+    @Autowired
+    private TestRestTemplate testRestTemplate;
     @MockBean
     private ProductService productService;
 
@@ -124,7 +122,7 @@ public class ProductControllerIntegration {
 
     @DisplayName("should UpdateProduct When Update Product Is Called")
     @Test
-    public void shouldUpdateProductWhenUpdateProductIsCalled()  {
+    public void shouldUpdateProductWhenUpdateProductIsCalled() {
 
         Mockito.when(productService.updateProductPartialBySku(anyString(), any()))
                 .thenReturn(DataUtils.getMockProductResponseDto("FAL-2000267"));
@@ -166,10 +164,10 @@ public class ProductControllerIntegration {
         String sku = "FAL-2000056";
         ProductRequestDto productRequest = DataUtils.getMockProductRequest(sku);
 
-        Mockito.when(productService.updateProductBySku(anyString() , any()))
+        Mockito.when(productService.updateProductBySku(anyString(), any()))
                 .thenReturn(DataUtils.getMockProductResponseDto(sku));
 
-        testRestTemplate.put("/product/"+sku, productRequest);
+        testRestTemplate.put("/product/" + sku, productRequest);
     }
 
     @Test
@@ -185,7 +183,7 @@ public class ProductControllerIntegration {
         header.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestMap, header);
 
-        ResponseEntity<ProductResponseDto> response = testRestTemplate.exchange("/product/"+sku, HttpMethod.PATCH, entity,  ProductResponseDto.class);
+        ResponseEntity<ProductResponseDto> response = testRestTemplate.exchange("/product/" + sku, HttpMethod.PATCH, entity, ProductResponseDto.class);
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
 
     }

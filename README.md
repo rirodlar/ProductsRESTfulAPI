@@ -1,8 +1,11 @@
 # Products RESTful API
+
 Offline Coding Evaluation (Build Restful CRUD API for a Product using Spring Boot, H2, JPA and Hibernate)
 
 ## Pre-requisites
+
 Make sure you have installed all the following prerequisites on your development machine:
+
 * **GIT**
 * **Java 11**
 * **Graddle**
@@ -18,10 +21,10 @@ git clone https://gitlab.sodimac-it.com/rarodriguezl/products-restful-api.git
 ```bash
 ./gradlew bootRun
 ```
+
 The app will start running at <http://localhost:7474>
 
 Configure environment properties on `src/main/resources/environment.properties`
-
 
 ## Explore Rest APIs
 
@@ -48,9 +51,11 @@ http://localhost:7474/api/v1/swagger-ui/index.html
 | GET   | /api/v1/product/{sku} | Get Products by sku|
 | DELETE   | /api/v1/product/{sku} | Delete Product by sku  |  |
 | PATCH   | /api/v1/product/ | Update Product by sku | [JSON](#updateProduct) |
+
 ## Sample Valid JSON Request Bodys
 
 ##### <a id="createProduct">Add Product -> /api/v1/product</a>
+
 ```json
 {
   "sku": "FAL-2000068",
@@ -69,48 +74,59 @@ http://localhost:7474/api/v1/swagger-ui/index.html
 ```
 
 ##### <a id="updateProduct">Update Product -> /api/v1/product</a>
+
 ```json
 {
   "brand": "FAL-1111",
   "name": "NAME11"
 }
 ```
-###CURL
+
+### CURL
 
 #### Get All products
+
 ```sh
 curl --location --request GET 'localhost:7474/api/v1/product/'
 ```
+
 status:  
 200: []  // Array of products  
 404: Not Found
 
 #### Get All products Page
+
 ```sh
 curl --location --request GET 'localhost:7474/api/v1/product/page/1/5'
 ```
+
 status:  
 200: []  // Array of products  
 404: Not Found
 
-#### Get product by filter of SKU  
+#### Get product by filter of SKU
+
 ```sh
 curl --location --request GET 'localhost:7474/api/v1/product/FAL-2000049'
 ```
+
 status:  
 200: [] // Array of Products    
-404: Not Found  
+404: Not Found
 
 #### Delete a product by SKU
+
 ```sh
 curl --location --request DELETE 'localhost:7474/api/v1/product/FAL-2000049'
 ```
+
 status:  
 204: Not Content  
 404: Not Found  
-500: Server Error  
+500: Server Error
 
 #### create Product
+
 ```sh
 curl --location --request POST 'localhost:7474/api/v1/product/' \  
 --header 'Content-Type: application/json' \  
@@ -131,12 +147,14 @@ curl --location --request POST 'localhost:7474/api/v1/product/' \
 ]  
 }'  
 ```
+
 status:  
 201: Created   
 400: Bad Request   
-500: Server Error  
+500: Server Error
 
 #### Update a product
+
 ```sh
 curl --location --request PATCH 'localhost:7474/api/v1/product/FAL-2000049' \  
 --header 'Content-Type: application/json' \  
@@ -144,6 +162,7 @@ curl --location --request PATCH 'localhost:7474/api/v1/product/FAL-2000049' \
     "brand": "x33333"  
 }'
 ```
+
 status:  
 200: OK   
 400: Bad Request   
