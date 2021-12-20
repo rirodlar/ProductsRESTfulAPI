@@ -3,9 +3,7 @@ package com.falabella.test.products.controller;
 
 import com.falabella.test.products.dto.ProductRequestDto;
 import com.falabella.test.products.dto.ProductResponseDto;
-import com.falabella.test.products.exception.ViolationConstrainsProductException;
 import com.falabella.test.products.service.ProductService;
-import com.falabella.test.products.util.Constant;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,16 +12,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
 @Api
 @RestController
 public class ProductController {
-
-
 
 
     @Autowired
@@ -33,12 +31,19 @@ public class ProductController {
     @PostMapping(value = "product")
     public ResponseEntity<ProductResponseDto> createProduct(@Valid @RequestBody ProductRequestDto payload) {
         ProductResponseDto product = productService.createProduct(payload);
-        return new ResponseEntity<>(product, HttpStatus.CREATED);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{sku}")
+                .buildAndExpand(product.getSku()).toUri();
+        return ResponseEntity.created(location).build();
     }
 
-    @ApiOperation(value = "Retrieve all existed products", notes = "This Operation returns all stored products.")
-    @GetMapping(value = "product/page/{page}/{size}")
-    public ResponseEntity<Page<ProductResponseDto>> findByPage(@PathVariable Integer page, @PathVariable Integer size) {
+    @ApiOperation(value = "Retrieve all existed products page", notes = "This Operation returns all stored products.")
+    @GetMapping(value = "product/page")
+    public ResponseEntity<Page<ProductResponseDto>> findByPage(
+            @RequestParam(value = "page", defaultValue = "${pagination.page}") int page,
+            @RequestParam(value = "size", defaultValue = "${pagination.size}") int size
+    ) {
         Page<ProductResponseDto> productResponseDtoList = productService.findAllProducts(PageRequest.of(page, size));
         return new ResponseEntity<>(productResponseDtoList, HttpStatus.OK);
     }
@@ -64,14 +69,17 @@ public class ProductController {
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Update an Product by Sku", notes = "This Operation Update a  Product.")
+    @ApiOperation(value = "Update an Product by Sku", notes = "This Operation Update a  Product Partial.")
     @PatchMapping(value = "product/{sku}")
-    public ResponseEntity updateProduct(@PathVariable String sku, @RequestBody Map<String, Object> changes) {
-        try {
-            ProductResponseDto productResponseDto = productService.updateProductBySku(sku, changes);
-            return new ResponseEntity<>(productResponseDto, HttpStatus.OK);
-        } catch (ViolationConstrainsProductException ex) {
-            return ResponseEntity.badRequest().body(ex.toString());
-        }
+    public ResponseEntity updateProductPartial(@PathVariable String sku, @RequestBody Map<String, Object> changes) {
+        ProductResponseDto productResponseDto = productService.updateProductPartialBySku(sku, changes);
+        return new ResponseEntity<>(productResponseDto, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Update an Product by Sku", notes = "This Operation Update a  Product.")
+    @PutMapping(value = "product/{sku}")
+    public ResponseEntity<ProductResponseDto> updateProduct(@Valid @RequestBody ProductRequestDto productRequestDto, @PathVariable String sku) {
+        ProductResponseDto productResponseDto = productService.updateProductBySku(sku, productRequestDto);
+        return new ResponseEntity<>(productResponseDto, HttpStatus.OK);
     }
 }
