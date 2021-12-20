@@ -1,9 +1,9 @@
 package com.falabella.test.products.entity;
 
 import lombok.*;
-
 import javax.persistence.*;
 import java.math.BigDecimal;
+
 import java.util.Objects;
 import java.util.Set;
 
@@ -35,10 +35,24 @@ public class ProductEntity extends CommonEntity {
     @Column(name = "IMAGE_URL", nullable = false)
     private String imageUrl;
 
+    //JSON B (option 2)
+//    @Type(type = "jsonb")
+//    @Column(name = "otherImages_json", columnDefinition = "jsonb")
+//    private List<String> otherImages;
+
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "productEntity")
     private Set<ImageProductEntity> otherImages;
+
+    //MANY MANY  //JSON B (option 3)
+//    @JoinTable(
+//            name = "rel_product_image",
+//            joinColumns = @JoinColumn(name = "FK_PRODUCT", nullable = false),
+//            inverseJoinColumns = @JoinColumn(name="FK_IMAGE", nullable = false)
+//    )
+//    @ManyToMany(cascade = CascadeType.ALL)
+//    private List<ImageEntity> imageEntityList;
 
     @Override
     public boolean equals(Object o) {
