@@ -5,8 +5,8 @@ import com.falabella.test.products.dto.ProductRequestDto;
 import com.falabella.test.products.dto.ProductResponseDto;
 import com.falabella.test.products.entity.ImageProductEntity;
 import com.falabella.test.products.entity.ProductEntity;
+import com.falabella.test.products.exception.BadRequestException;
 import com.falabella.test.products.exception.ProductNotFoundException;
-import com.falabella.test.products.exception.ViolationConstrainsProductException;
 import com.falabella.test.products.repository.ImageProductRepository;
 import com.falabella.test.products.repository.ProductRepository;
 import com.falabella.test.products.util.EntityDtoConverter;
@@ -14,6 +14,8 @@ import com.falabella.test.products.util.ExceptionMessageEnum;
 import com.falabella.test.products.util.Message;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -41,18 +43,32 @@ public class ProductService {
     @Autowired
     private EntityDtoConverter entityDtoConverter;
 
-    @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
+    @Transactional(readOnly = true)
     public List<ProductResponseDto> findAllProducts() {
         List<ProductResponseDto> productResponseDtoList = new ArrayList<>();
-        Set<ProductEntity> productEntityList = productRepository.findAllProductWithImage();
+        Set<ProductEntity> productEntityList = productRepository.findAllProductImage();
         for (ProductEntity product : productEntityList) {
             productResponseDtoList.add(entityDtoConverter.convertEntityToDto(product));
         }
         return productResponseDtoList;
     }
 
+    @Transactional(readOnly = true)
+    public Page<ProductResponseDto> findAllProducts(Pageable pageable) {
+        Page<ProductEntity> productEntityList = productRepository.findAll(pageable);
+        if (productEntityList != null) {
+            Page<ProductResponseDto> productResponsePageDto = productEntityList.map(entity -> {
+                ProductResponseDto dto = entityDtoConverter.convertEntityToDto(entity);
+                return dto;
+            });
 
-    @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
+            return productResponsePageDto;
+        }
+        return Page.empty();
+    }
+
+
+    @Transactional(readOnly = true)
     public ProductResponseDto findProductBySku(String sku) {
         Optional<ProductEntity> productEntity = Optional.ofNullable(productRepository.findProductBySku(sku));
         if (!productEntity.isPresent()) {
@@ -61,7 +77,20 @@ public class ProductService {
         return entityDtoConverter.convertEntityToDto(productEntity.get());
     }
 
-    public ProductResponseDto updateProductBySku(String sku, Map<String, Object> changes) throws ViolationConstrainsProductException {
+    @Transactional
+    public ProductResponseDto updateProductBySku(String sku, ProductRequestDto productRequestDto) {
+        ProductEntity productEntity = findProductById(sku);
+        productEntity.setName(productRequestDto.getName());
+        productEntity.setPrice(productRequestDto.getPrice());
+        productEntity.setImageUrl(productRequestDto.getUrlImage());
+        productEntity.setSize(productRequestDto.getSize());
+        productEntity.setBrand(productRequestDto.getBrand());
+        ProductEntity product = productRepository.saveAndFlush(productEntity);
+        return entityDtoConverter.convertEntityToDto(product);
+    }
+
+    @Transactional
+    public ProductResponseDto updateProductPartialBySku(String sku, Map<String, Object> changes) {
 
         ProductEntity productEntity = findProductById(sku);
         ProductRequestDto productRequestModel = mapProductEntityToProductRequestModel(productEntity);
@@ -94,7 +123,7 @@ public class ProductService {
         Set<ConstraintViolation<ProductRequestDto>> violations = validator.validate(productRequestModel);
 
         if (!violations.isEmpty()) {
-            throw new ViolationConstrainsProductException(violations.toString());
+            throw new IllegalArgumentException(violations.toString());
         }
 
         ProductEntity productUpdate = productRepository.saveAndFlush(mapProductEntityToProductRequestModel(productRequestModel));
@@ -108,7 +137,7 @@ public class ProductService {
 
         Optional<ProductEntity> productEntityOptional = productRepository.findById(productRequestDto.getSku());
         if (productEntityOptional.isPresent()) {
-            throw new RuntimeException(Message.SKU_ALREADY_EXIST);
+            throw new BadRequestException(Message.SKU_ALREADY_EXIST);
         }
 
         ProductEntity productEntity = ProductEntity.builder()
@@ -136,9 +165,10 @@ public class ProductService {
     }
 
     @Transactional()
-    public void deleteProduct(String sku) {
+    public boolean deleteProduct(String sku) {
         ProductEntity productEntity = findProductById(sku);
         productRepository.delete(productEntity);
+        return true;
     }
 
 

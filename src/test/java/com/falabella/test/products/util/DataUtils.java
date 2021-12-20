@@ -1,9 +1,13 @@
 package com.falabella.test.products.util;
 
+import com.falabella.test.products.dto.ImageDto;
 import com.falabella.test.products.dto.ProductRequestDto;
 import com.falabella.test.products.dto.ProductResponseDto;
+import com.falabella.test.products.entity.ImageProductEntity;
 import com.falabella.test.products.entity.ProductEntity;
+
 import java.math.BigDecimal;
+import java.util.Set;
 
 
 public class DataUtils {
@@ -51,19 +55,18 @@ public class DataUtils {
                 .size("Size of the product")
                 .name("Short description of the product")
                 .urlImage("https://dssdd.png")
+                .otherImages(Set.of(ImageDto.builder()
+                        .urlImage("https://dssdd.png")
+                        .build()))
                 .build();
 
     }
 
-//    public static ProductEntity getMockProductEntity(String sku) {
-//        ProductResponseDto response = ProductResponseDto.builder()
-//                .sku(sku)
-//                .price(BigDecimal.TEN)
-//                .name("name")
-//                .brand("brand")
-//                .imageUrl("https://s1.piq.land/2015/04/28/54oxzkYpKAtS26nzo3upKaTr_400x400.png")
-//                .build();
-//
-//        return response;
-//    }
+    public static ImageProductEntity getMockImageEntity(String url) {
+        ImageProductEntity imageProductEntity = ImageProductEntity.builder()
+                .urlImage("https://s1.piq.land/2015/04/28/54oxzkYpKAtS26nzo3upKaTr_400x400.png")
+                .build();
+
+        return imageProductEntity;
+    }
 }

@@ -50,7 +50,7 @@ public class ProductRepositoryTest {
 
     @Test
     public void shouldReturnAllProductsWhenFindAllIsCalled() {
-        Iterable<ProductEntity> productEntityIterable =  productRepository.findAll();
+        Iterable<ProductEntity> productEntityIterable = productRepository.findAll();
         Assertions.assertEquals(5, productEntityIterable.spliterator().getExactSizeIfKnown());
     }
 
